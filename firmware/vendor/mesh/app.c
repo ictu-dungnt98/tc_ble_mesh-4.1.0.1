@@ -51,7 +51,6 @@
 #include "../common/subnet_bridge.h"
 #include "proj/drivers/keyboard.h"
 #include "app.h"
-#include "app_ui.h"
 #include "vendor/common/blt_soft_timer.h"
 #include "proj/drivers/rf_pa.h"
 #include "../common/remote_prov.h"
@@ -437,7 +436,6 @@ void main_loop ()
 //	test_simu_io_user_define_proc();
 	#if DUAL_MESH_ZB_BL_EN
 	if(RF_MODE_BLE != dual_mode_proc()){    // should be before is mesh latency window()
-        proc_ui();
         proc_led();
         #if (!PM_DEEPSLEEP_RETENTION_ENABLE)
         factory_reset_cnt_check();
@@ -479,7 +477,6 @@ void main_loop ()
 	du_loop_proc();
 	#endif
 	#if !DU_LPN_EN
-	proc_ui();
 	proc_led();
 		#if (!PM_DEEPSLEEP_RETENTION_ENABLE)
 	factory_reset_cnt_check();
