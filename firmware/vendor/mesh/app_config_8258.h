@@ -28,7 +28,7 @@
 #if defined(__cplusplus)
 extern "C" {
 #endif
-
+#include "vendor/mesh/user/config/app_config.h"
 #include "vendor/common/version.h"    // include mesh_config.h inside.
 //////////////////board sel/////////////////////////////////////
 #define PCBA_8258_DONGLE_48PIN          1
@@ -93,33 +93,33 @@ extern "C" {
 #define HCI_USE_USB		2
 
 #ifndef HCI_ACCESS
-#if (WIN32 || PTS_TEST_EN || TESTCASE_FLAG_ENABLE)
-#define HCI_ACCESS		HCI_USE_USB
-#elif MESH_MONITOR_EN
+// #if (WIN32 || PTS_TEST_EN || TESTCASE_FLAG_ENABLE)
+// #define HCI_ACCESS		HCI_USE_UART
+// #elif MESH_MONITOR_EN
+// #define HCI_ACCESS		HCI_USE_UART
+// #else
+// 	#if GATT_RP_EN
+// #define HCI_ACCESS		HCI_USE_UART
+// 	#else
 #define HCI_ACCESS		HCI_USE_UART
-#else
-	#if GATT_RP_EN
-#define HCI_ACCESS		HCI_USE_UART
-	#else
-#define HCI_ACCESS		HCI_USE_NONE
-	#endif
-#endif 
+	// #endif
+// #endif 
 
 #if (HCI_ACCESS==HCI_USE_UART)
 #define UART_TX_PIN		UART_TX_PD7
-#define UART_RX_PIN		UART_RX_PA0
+#define UART_RX_PIN		UART_RX_PB7
 #endif
 #endif
 
 #ifndef HCI_LOG_FW_EN
-#define HCI_LOG_FW_EN   (0 || DEBUG_LOG_SETTING_DEVELOP_MODE_EN)
+#define HCI_LOG_FW_EN   DEBUG_ENABLE
 #if HCI_LOG_FW_EN
 	#if (MESH_USER_DEFINE_MODE == MESH_IRONMAN_MENLO_ENABLE)
 #define DEBUG_INFO_TX_PIN           		(PCBA_8258_SEL == PCBA_8258_C1T140A3_V1_1 ? GPIO_PB6 : GPIO_PD7)
 	#elif(PCBA_8258_SEL == PCBA_8258_C1T139A30_V1_2)
 #define DEBUG_INFO_TX_PIN           		GPIO_PD0	
 	#else
-#define DEBUG_INFO_TX_PIN           		GPIO_PB2
+#define DEBUG_INFO_TX_PIN           		GPIO_PB1
 	#endif
 #define PRINT_DEBUG_INFO                    1
 #endif

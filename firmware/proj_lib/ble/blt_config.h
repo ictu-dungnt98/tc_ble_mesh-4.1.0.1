@@ -272,6 +272,11 @@ typedef struct {
 #define			FLASH_ADR_MD_G_POWER_ONOFF	0x71000
 #define			FLASH_ADR_MD_SCENE			0x72000
 
+//hunonic
+#define 		FLASH_ADR_VD_HUNONIC 		0x70000
+#define 		FLASH_ADR_SETTINGS_HUNONIC 	0x71000
+#define 		FLASH_ADR_DEVICE_ID_HUNONIC 0x76000 // CFG_ADR_MAC_512K_FLASH
+
 #define			FLASH_ADR_MESH_TYPE_FLAG	0x73000	// don't change, must same with telink mesh SDK
 #define			FLASH_ADR_SW_LEVEL			0x74000 // V4.1.0.0 or earlier version is mesh ota model
 	#if TLV_ENABLE

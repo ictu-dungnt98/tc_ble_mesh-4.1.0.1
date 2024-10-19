@@ -660,6 +660,47 @@ void 	app_phy_update_complete_event(u8 e,u8 *p, int n)
 }
 #endif
 
+extern int m_uart_rx_callback(uint8_t *pData, size_t size);
+int rx_from_uart_cb(void)
+{
+	uart_ErrorCLR();
+	const uint8_t max_retry = 5;
+	static uint8_t retry = max_retry;
+
+	uart_data_t *p = (uart_data_t *)my_fifo_get(&hci_rx_fifo);
+	if (p)
+	{
+		size_t size = (size_t)p->len;
+		if (m_uart_rx_callback(p->data, size) == 0 || !retry)
+		{
+			my_fifo_pop(&hci_rx_fifo);
+			retry = max_retry;
+		}
+		else
+		{
+			retry ? retry-- : 0;
+		}
+	}
+
+	return 0;
+}
+
+int tx_to_uart_cb()
+{
+	u8 *p = my_fifo_get(&hci_tx_fifo);
+	if (p && !uart_tx_is_busy())
+	{
+		u16 data_len = *((u16 *)p);
+		u8 *pData = &p[2];
+
+		if (uart_Send(pData, data_len))
+		{
+			my_fifo_pop(&hci_tx_fifo);
+		}
+	}
+	return 0;
+}
+
 void user_init()
 {
     #if (BATT_CHECK_ENABLE)
@@ -819,8 +860,8 @@ void user_init()
 	blc_register_hci_handler (app_hci_cmd_from_usb, blc_hci_tx_to_usb);
 	#elif (HCI_ACCESS == HCI_USE_UART)	//uart
 	uart_drv_init();
-	blc_register_hci_handler (blc_rx_from_uart, blc_hci_tx_to_uart);		//default handler
-	//blc_register_hci_handler(rx_from_uart_cb,tx_to_uart_cb);				//customized uart handler
+	// blc_register_hci_handler (blc_rx_from_uart, blc_hci_tx_to_uart);		//default handler
+	blc_register_hci_handler(rx_from_uart_cb,tx_to_uart_cb);				//customized uart handler
 	#endif
 #endif
 	#if ADC_ENABLE

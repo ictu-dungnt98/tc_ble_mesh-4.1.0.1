@@ -25,14 +25,6 @@
 #define CONFIG_H_
 #pragma once
 
-#ifndef CHIP_TYPE
-#if(WIN32)
-#define	CHIP_TYPE 			CHIP_TYPE_8269
-#else
-#define	CHIP_TYPE 			1000
-#endif
-#endif
-
 #define	CHIP_TYPE_8266  	1
 #define	CHIP_TYPE_8366  	2
 #define	CHIP_TYPE_8368  	3
@@ -57,37 +49,18 @@
 #define	MCU_CORE_9518 		10
 #define MCU_CORE_B91 		MCU_CORE_9518
 
-#if(CHIP_TYPE == CHIP_TYPE_8266)
-	#define MCU_CORE_TYPE	MCU_CORE_8266
-#elif(CHIP_TYPE == CHIP_TYPE_8267)
-	#define MCU_CORE_TYPE	MCU_CORE_8267
-#elif(CHIP_TYPE == CHIP_TYPE_8366)
-	#define MCU_CORE_TYPE	MCU_CORE_8366
-#elif(CHIP_TYPE == CHIP_TYPE_8368)
-	#define MCU_CORE_TYPE	MCU_CORE_8368
-#elif(CHIP_TYPE == CHIP_TYPE_8263)
-	#define MCU_CORE_TYPE	MCU_CORE_8263
-#elif(CHIP_TYPE == CHIP_TYPE_8261)
-	#define MCU_CORE_TYPE	MCU_CORE_8261
-#elif(CHIP_TYPE == CHIP_TYPE_8269)
-	#define MCU_CORE_TYPE	MCU_CORE_8269
-#elif(CHIP_TYPE == CHIP_TYPE_8258)
-	#define MCU_CORE_TYPE	MCU_CORE_8258
-#elif(CHIP_TYPE == CHIP_TYPE_8278)
-	#define MCU_CORE_TYPE	MCU_CORE_8278
-#elif(CHIP_TYPE == CHIP_TYPE_9518)
-	#define MCU_CORE_TYPE	MCU_CORE_9518
-#else
-	#define MCU_CORE_TYPE	1000
-#endif
-
 #define FREERTOS_ENABLE		0
 
-#ifndef CHIP_TYPE
-#define	CHIP_TYPE 			1000
+#ifdef MCU_CORE_TYPE
+#undef MCU_CORE_TYPE
 #endif
 
+#ifdef CHIP_TYPE
+#undef CHIP_TYPE
+#endif
 
-
+#define	CHIP_TYPE 			CHIP_TYPE_8258
+#define MCU_CORE_TYPE		MCU_CORE_8258
+#define __PROJECT_MESH__ 	1
 
 #endif /* CONFIG_H_ */
