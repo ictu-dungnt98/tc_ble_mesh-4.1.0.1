@@ -33,6 +33,9 @@ extern "C" {
     Note: only can use "#define", "#if .. #elif..#endif", etc. here. Don't use "enum" "typedef".
 */
 
+#define HUNONIC_VENDOR_ID   0x0059
+#define VENDOR_ID           HUNONIC_VENDOR_ID
+
 // #define RAM_SIZE_MAX            		(48*1024)	// 8253/8273
 
 //#define ENCODE_BIN_USER_NAME	{"xxx_mesh_AES"}

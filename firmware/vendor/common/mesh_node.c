@@ -67,6 +67,8 @@
 #include "tlv_flash.h"
 #endif
 
+#include "vendor/mesh/user/middle/mesh_model/vendor_model_hunonic.h"
+
 #if (__PROJECT_MESH_SWITCH__ && (0 == PM_DEEPSLEEP_RETENTION_ENABLE))
 #define MESH_CMD_SNO_SAVE_DELTA             (0x04)	// can't set too much, becaush of deep sleep
 #else
@@ -691,7 +693,11 @@ STATIC_ASSERT(MD_ONOFF_EN == 1);
 #else
 #define MD_ID_ARRAY_PRIMARY     MD_ID_ARRAY_CFG   MD_ID_ARRAY_MESH_OTA   MD_ID_ARRAY_ONOFF
 #endif
-#define MD_ID_ARRAY_PRIMARY_VD  MD_ID_ARRAY_SIG2VD_VD   MD_ID_ARRAY_VENDOR_SERVER  MD_ID_ARRAY_VENDOR_CLIENT
+
+// #define MD_ID_ARRAY_PRIMARY_VD  MD_ID_ARRAY_SIG2VD_VD   MD_ID_ARRAY_VENDOR_SERVER  MD_ID_ARRAY_VENDOR_CLIENT
+
+#define MD_ID_ARRAY_NODE_HUNONIC GATEWAY_COMMON_MODEL_RX, GATEWAY_SWITCH_MODEL_RX, GATEWAY_OCSENSOR_MODEL_RX, GATEWAY_MTSENSOR_MODEL_RX, GATEWAY_SMSENSOR_MODEL_RX, GATEWAY_THSENSOR_MODEL_RX
+#define MD_ID_ARRAY_PRIMARY_VD MD_ID_ARRAY_NODE_HUNONIC
 
 const u16 md_id_sig_primary[] =     {MD_ID_ARRAY_PRIMARY};
 const u32 md_id_vendor_primary[] =  {MD_ID_ARRAY_PRIMARY_VD};
@@ -3850,59 +3856,16 @@ const mesh_save_map_t mesh_save_map[] = {
 #endif
 	{FLASH_ADR_MD_CFG_S, (u8 *)&model_sig_cfg_s, &mesh_md_cfg_s_addr, sizeof(model_sig_cfg_s)},
 	{FLASH_ADR_MD_HEALTH, (u8 *)&model_sig_health, &mesh_md_health_addr, sizeof(model_sig_health)},
-	{FLASH_ADR_MD_G_ONOFF_LEVEL, (u8 *)&model_sig_g_onoff_level, &mesh_md_g_onoff_level_addr, sizeof(model_sig_g_onoff_level)},
-#if (STRUCT_MD_TIME_SCHEDULE_EN)
-	{FLASH_ADR_MD_TIME_SCHEDULE, (u8 *)&model_sig_time_schedule, &mesh_md_time_schedule_addr, sizeof(model_sig_time_schedule)},
-#endif
 	{FLASH_ADR_PROVISION_CFG_S, (u8 *)&provision_mag, &mesh_provision_mag_addr, sizeof(provision_mag)},
-#if MD_REMOTE_PROV
-    //{FLASH_ADR_MD_REMOTE_PROV, (u8 *)&model_remote_prov, &mesh_md_rp_addr, sizeof(model_remote_prov)},
-#endif
 #if (MESH_MODEL_MISC_SAVE_EN)
 	{FLASH_ADR_MD_MISC_PAR, (u8 *)&g_mesh_model_misc_save, &mesh_model_misc_save_addr, sizeof(g_mesh_model_misc_save)},
 #endif
-#if MD_SCENE_EN
-	{FLASH_ADR_MD_SCENE, (u8 *)&model_sig_scene, &mesh_md_scene_addr, sizeof(model_sig_scene)},
-#endif
+
 #if MD_MESH_OTA_EN
     {FLASH_ADR_MD_MESH_OTA, (u8 *)&model_mesh_ota, &mesh_md_mesh_ota_addr, sizeof(model_mesh_ota)},
 #endif
 
-#if STRUCT_MD_DEF_TRANSIT_TIME_POWER_ONOFF_EN
-	{FLASH_ADR_MD_G_POWER_ONOFF, (u8 *)&model_sig_g_power_onoff, &mesh_md_g_power_onoff_addr, sizeof(model_sig_g_power_onoff)},
-#endif
-
-#if (LIGHT_TYPE_SEL == LIGHT_TYPE_POWER)
-	{FLASH_ADR_MD_LIGHTNESS, (u8 *)&model_sig_lightness, &mesh_md_lightness_addr, sizeof(model_sig_lightness)},
-#else
-	{FLASH_ADR_MD_LIGHTNESS, (u8 *)&model_sig_lightness, &mesh_md_lightness_addr, sizeof(model_sig_lightness)},
-	#if MD_LIGHT_CONTROL_EN
-	{FLASH_ADR_MD_LIGHT_LC, (u8 *)&model_sig_light_lc, &mesh_md_light_lc_addr, sizeof(model_sig_light_lc)},
-	#endif
-	#if (LIGHT_TYPE_CT_EN)
-	{FLASH_ADR_MD_LIGHT_CTL, (u8 *)&model_sig_light_ctl, &mesh_md_light_ctl_addr, sizeof(model_sig_light_ctl)},
-    #endif
-	#if (LIGHT_TYPE_HSL_EN)
-	{FLASH_ADR_MD_LIGHT_HSL, (u8 *)&model_sig_light_hsl, &mesh_md_light_hsl_addr, sizeof(model_sig_light_hsl)},
-    #endif
-	#if (LIGHT_TYPE_SEL == LIGHT_TYPE_XYL)
-	{FLASH_ADR_MD_LIGHT_CTL, (u8 *)&model_sig_light_xyl, &mesh_md_light_ctl_addr, sizeof(model_sig_light_xyl)},
-	#endif
-#endif
-#if(MD_SENSOR_EN || MD_BATTERY_EN || MD_LOCATION_EN)  
-	{FLASH_ADR_MD_SENSOR, (u8 *)&model_sig_sensor, &mesh_md_sensor_addr, sizeof(model_sig_sensor)},
-#endif
-#if(MD_PROPERTY_EN)
-	{FLASH_ADR_MD_PROPERTY, (u8 *)&model_sig_property, &mesh_md_property_addr, sizeof(model_sig_property)},
-#elif((MD_DF_CFG_SERVER_EN || MD_SBR_CFG_SERVER_EN))
-	{FLASH_ADR_MD_DF_SBR, (u8 *)&model_sig_g_df_sbr_cfg, &mesh_md_df_sbr_addr, sizeof(model_sig_g_df_sbr_cfg)},
-#elif(MD_CMR_EN)
-	{FLASH_ADR_MD_CMR, (u8 *)&model_sig_g_cmr, &mesh_md_cmr_addr, sizeof(model_sig_g_cmr)},
-#endif
-	{FLASH_ADR_MD_VD_LIGHT, (u8 *)&model_vd_light, &mesh_md_vd_light_addr, sizeof(model_vd_light)},
-#if (ALI_MD_TIME_EN)
-	{FLASH_ADR_VD_TIME_INFO, (u8 *)&model_vd_ali_time, &mesh_md_vd_ali_time_addr, sizeof(model_vd_ali_time)},
-#endif
+	{FLASH_ADR_VD_HUNONIC, (u8 *)&model_vd_hunonic, &mesh_md_hunonic_addr, sizeof(model_vd_hunonic)},
 };
 const u32 mesh_save_map_array = ARRAY_SIZE(mesh_save_map);
 #if !WIN32&&TLV_ENABLE

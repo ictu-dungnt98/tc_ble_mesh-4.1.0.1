@@ -3870,15 +3870,16 @@ int mesh_rc_data_layer_access_cb(u8 *params, int par_len, mesh_cb_fun_par_t *cb_
 	}
 
     if(!is_use_device_key(p_res->id, p_res->sig) || DEBUG_CFG_CMD_GROUP_USE_AK(cb_par->adr_dst)){ // user should not handle config model op code
-        #if (VENDOR_MD_NORMAL_EN)
-            #if ((VENDOR_OP_MODE_SEL == VENDOR_OP_MODE_DEFAULT)&&(DRAFT_FEATURE_VENDOR_TYPE_SEL == DRAFT_FEATURE_VENDOR_TYPE_NONE))
-        if(IS_VENDOR_OP(cb_par->op)){
-            if((cb_par->op >= VD_OP_RESERVE_FOR_TELINK_START) && (cb_par->op <= VD_OP_RESERVE_FOR_TELINK_END)){
-                return -1;
-            }
-        }
-            #endif
-        #endif
+        
+		// #if (VENDOR_MD_NORMAL_EN)
+        //     #if ((VENDOR_OP_MODE_SEL == VENDOR_OP_MODE_DEFAULT)&&(DRAFT_FEATURE_VENDOR_TYPE_SEL == DRAFT_FEATURE_VENDOR_TYPE_NONE))
+        // if(IS_VENDOR_OP(cb_par->op)){
+        //     if((cb_par->op >= VD_OP_RESERVE_FOR_TELINK_START) && (cb_par->op <= VD_OP_RESERVE_FOR_TELINK_END)){
+        //         return -1;
+        //     }
+        // }
+        //     #endif
+        // #endif
         
         #if (!WIN32 && !FEATURE_LOWPOWER_EN)
         if(0 == mesh_tx_with_random_delay_ms){

@@ -49,6 +49,12 @@
 #if MD_CMR_EN
 #include "controlled_mesh_relay.h"
 #endif
+
+#include "vendor/mesh/user/middle/mesh_model/vendor_model_hunonic.h"
+
+extern uint32_t mesh_md_hunonic_addr;
+extern model_vd_hunonic_t model_vd_hunonic;
+
 /** @addtogroup Mesh_Common
   * @{
   */
@@ -1890,17 +1896,20 @@ int mesh_search_model_id_by_op(mesh_op_resource_t *op_res, u16 op, u8 tx_flag)
     }
 
     if(OP_TYPE_VENDOR == op_type){
-#if (DUAL_VENDOR_EN)
-        if(VENDOR_ID_MI == g_vendor_id){
-            return mi_mesh_search_model_id_by_op_vendor(op_res, op, tx_flag);
-        }else{
-            return mesh_search_model_id_by_op_vendor(op_res, op, tx_flag);
-        }
-#elif (VENDOR_MD_MI_EN)
-        return mi_mesh_search_model_id_by_op_vendor(op_res, op, tx_flag);
-#else
-        return mesh_search_model_id_by_op_vendor(op_res, op, tx_flag);
-#endif
+// #if (DUAL_VENDOR_EN)
+//         if(VENDOR_ID_MI == g_vendor_id){
+//             return mi_mesh_search_model_id_by_op_vendor(op_res, op, tx_flag);
+//         }else{
+//             return mesh_search_model_id_by_op_vendor(op_res, op, tx_flag);
+//         }
+// #elif (VENDOR_MD_MI_EN)
+//         return mi_mesh_search_model_id_by_op_vendor(op_res, op, tx_flag);
+// #else
+//         return mesh_search_model_id_by_op_vendor(op_res, op, tx_flag);
+// #endif
+
+        /* hunonic */
+        return vd_model_hunonic_search_model_id_by_op_vendor(op_res, op, tx_flag);
     }
 
     return -1;
@@ -2445,6 +2454,37 @@ u8* mesh_find_ele_resource_in_model(u16 ele_adr, u32 model_id, bool4 sig_model, 
         IF_find_ele_resource(p_model,model_vd_id_clnt,model_vd_light.clnt);
     #endif
 #endif
+
+        // NOTE: Hunonic
+        if (model_id == GATEWAY_COMMON_MODEL_RX)
+        {
+            p_model = (u8 *)&model_vd_hunonic.common_model;
+        }
+
+        if (model_id == GATEWAY_SWITCH_MODEL_RX)
+        {
+            p_model = (u8 *)&model_vd_hunonic.switch_model;
+        }
+
+        if (model_id == GATEWAY_OCSENSOR_MODEL_RX)
+        {
+            p_model = (u8 *)&model_vd_hunonic.ocsensor_model;
+        }
+
+        if (model_id == GATEWAY_MTSENSOR_MODEL_RX)
+        {
+            p_model = (u8 *)&model_vd_hunonic.mtsensor_model;
+        }
+
+        if (model_id == GATEWAY_SMSENSOR_MODEL_RX)
+        {
+            p_model = (u8 *)&model_vd_hunonic.smsensor_model;
+        }
+
+        if (model_id == GATEWAY_THSENSOR_MODEL_RX)
+        {
+            p_model = (u8 *)&model_vd_hunonic.thsensor_model;
+        }
     }
 
     return p_model;
@@ -2479,6 +2519,14 @@ void mesh_model_ele_adr_init()
 	#if MD_CLIENT_VENDOR_EN
 	MODEL_ELE_ADR_INIT(model_vd_light.clnt);
 	#endif
+    
+    // NOTE: Hunonic
+    model_vd_hunonic.common_model.ele_adr = 0;
+    model_vd_hunonic.switch_model.ele_adr = 0;
+    model_vd_hunonic.ocsensor_model.ele_adr = 0;
+    model_vd_hunonic.mtsensor_model.ele_adr = 0;
+    model_vd_hunonic.smsensor_model.ele_adr = 0;
+    model_vd_hunonic.thsensor_model.ele_adr = 0;
 }
 
 #if MD_SERVER_EN

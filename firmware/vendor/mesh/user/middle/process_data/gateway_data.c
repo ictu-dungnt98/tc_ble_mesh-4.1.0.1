@@ -134,10 +134,6 @@ extern model_vd_hunonic_t model_vd_hunonic;
 extern u8 get_net_arr_idx_by_appkey(u16 appkey_idx);
 void ble_get_mesh_params(gateway_pkg_t *params)
 {
-    uint8_t iv_cur[4];
-    uint8_t iv_tx[4];
-    uint8_t iv_rx[4];
-
     u8 ak_array_idx;
     u8 nk_array_idx;
     model_common_t *p_com_md = &model_vd_hunonic.switch_model;
@@ -147,37 +143,13 @@ void ble_get_mesh_params(gateway_pkg_t *params)
     int nk_len = sizeof(mesh_key.net_key[nk_array_idx][0].key);
     int ak_len = sizeof(mesh_key.net_key[nk_array_idx][0].app_key[ak_array_idx].key);
 
-    /*
-        This SDK save IV index as big-endian in all RAM and FLASH.
-        But switch device using SDK that store IV index as little endian in RAM, big endian in FLASH.
-        Sensor devices are also using this SDK, so sensor devices save IV index as big-endian in all RAM and FLASH.
-
-        I will send to APP IV index in format little-endian. (APP will forward IV index to switch and sensor).
-
-        At switch side, it has to convert IV index to big-endian to store in in struct provison_net_info_str
-        for provisioning process.
-
-        At sensor side, it has to convert IV index to big-endian to store in in struct provison_net_info_str
-        for provisioning process.
-     */
-    memset(iv_cur, 0, sizeof(iv_cur));
-    memset(iv_tx, 0, sizeof(iv_tx));
-    memset(iv_rx, 0, sizeof(iv_rx));
-
-    memcpy(iv_cur, iv_idx_st.iv_cur, 4);
-    memcpy(iv_tx, iv_idx_st.iv_tx, 4);
-    memcpy(iv_rx, iv_idx_st.iv_rx, 4);
-    endianness_swap_u32(iv_cur);
-    endianness_swap_u32(iv_tx);
-    endianness_swap_u32(iv_rx);
-
     gateway_rep_mesh_info_t mesh_info;
     memset(&mesh_info, 0, sizeof(mesh_info));
     memcpy(&mesh_info.netkey, mesh_key.net_key[nk_array_idx][0].key, nk_len);
     memcpy(&mesh_info.appkey, mesh_key.net_key[nk_array_idx][0].app_key[ak_array_idx].key, ak_len);
-    memcpy(&mesh_info.iv_cur, iv_cur, 4);
-    memcpy(&mesh_info.iv_tx, iv_tx, 4);
-    memcpy(&mesh_info.iv_rx, iv_rx, 4);
+    mesh_info.iv_cur = iv_idx_st.iv_cur;
+    mesh_info.iv_tx = iv_idx_st.iv_tx;
+    mesh_info.iv_rx = iv_idx_st.iv_rx;
 
     uart_message_t tx_msg;
     memset(&tx_msg, 0, sizeof(tx_msg));
@@ -197,20 +169,6 @@ void show_mesh_info(void)
 	uint8_t netkey[17] = {0};
 	uint8_t appkey[17] = {0};
 
-    uint32_t iv_cur;
-    uint32_t iv_tx;
-    uint32_t iv_rx;
-    memset(&iv_cur, 0, sizeof(iv_cur));
-    memset(&iv_tx, 0, sizeof(iv_tx));
-    memset(&iv_rx, 0, sizeof(iv_rx));
-
-    memcpy(&iv_cur, iv_idx_st.iv_cur, 4);
-    memcpy(&iv_tx, iv_idx_st.iv_tx, 4);
-    memcpy(&iv_rx, iv_idx_st.iv_rx, 4);
-    endianness_swap_u32((uint8_t*)&iv_cur);
-    endianness_swap_u32((uint8_t*)&iv_tx);
-    endianness_swap_u32((uint8_t*)&iv_rx);
-
 	u8 ak_array_idx;
 	u8 nk_array_idx;
 	model_common_t *p_com_md = &model_vd_hunonic.switch_model;
@@ -223,7 +181,7 @@ void show_mesh_info(void)
 	LOG_USER_MSG_INFO(0, 0, "nk_array_idx: %d: %s ", nk_array_idx, (char*)netkey);
 	LOG_USER_MSG_INFO(0, 0, "ak_array_idx: %d: %s ", ak_array_idx, (char*)appkey);
 	LOG_USER_MSG_INFO(0, 0, "\"cur_iv\":%d, \"tx_iv\":%d, \"rx_iv\":%d",
-					  iv_cur, iv_tx, iv_rx);
+					  iv_idx_st.iv_cur, iv_idx_st.iv_tx, iv_idx_st.iv_rx);
 }
 
 m_gateway_handler_t array_handler[] = {

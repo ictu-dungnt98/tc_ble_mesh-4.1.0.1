@@ -35,18 +35,13 @@ static int vendor_rx_handle(u8 *par, int par_len, mesh_cb_fun_par_t *cb_par)
     memset(&message.msg.mesh_pkg.para, 0, par_len);
     memcpy(&message.msg.mesh_pkg.para, par, par_len);
 
-    if (message.msg.mesh_pkg.opcode_mesh == 0xD0 &&
-        message.msg.mesh_pkg.para.cmd == BEACON_REP_ENABLE_LINK)
+    if (message.msg.mesh_pkg.opcode_mesh == 0xD0)
     {
         LOG_USER_MSG_INFO(0, 0,"vendor_rx %s. address: %d", __func__, message.msg.mesh_pkg.address);
         LOG_USER_MSG_INFO(0, 0,"vendor_rx %s. opcode_mesh: %x", __func__, message.msg.mesh_pkg.opcode_mesh);
         LOG_USER_MSG_INFO(0, 0,"vendor_rx %s. model_id: %x", __func__, message.msg.mesh_pkg.model_id);
         LOG_USER_MSG_INFO(0, 0,"vendor_rx %s. par_len: %x", __func__, par_len);
         LOG_USER_MSG_INFO(0, 0,"vendor_rx %s. cmd: %x", __func__, message.msg.mesh_pkg.para.cmd);
-        LOG_USER_MSG_INFO(0, 0,"vendor_rx %s. enable: %x", __func__, message.msg.mesh_pkg.para.data.sw_msg_rep.beacon_link_rep.rep_enable_link.enable);
-        LOG_USER_MSG_INFO(0, 0,"vendor_rx %s. index: %x", __func__, message.msg.mesh_pkg.para.data.sw_msg_rep.beacon_link_rep.rep_enable_link.index);
-        LOG_USER_MSG_INFO(0, 0,"vendor_rx %s. result: %x", __func__, message.msg.mesh_pkg.para.data.sw_msg_rep.beacon_link_rep.rep_enable_link.result);
-        LOG_USER_MSG_INFO(0, 0,"vendor_rx %s. uid: %x", __func__, message.msg.mesh_pkg.para.data.sw_msg_rep.beacon_link_rep.rep_enable_link.uid);
     }
 
     if (check_ota_state() == 0)
@@ -129,7 +124,7 @@ int vd_model_hunonic_health_client_callback(u8 *par, int par_len, mesh_cb_fun_pa
 
 int vd_model_hunonic_search_model_id_by_op_vendor(mesh_op_resource_t *op_res, u16 op, u8 tx_flag)
 {
-    // LOG_USER_MSG_INFO(0, 0,"Hunonic search model with opcode: 0x%04X", op);
+    LOG_USER_MSG_INFO(0, 0,"Hunonic search model with opcode: 0x%04X", op);
 
     foreach_arr(i, mesh_cmd_hunonic_func)
     {
@@ -140,6 +135,8 @@ int vd_model_hunonic_search_model_id_by_op_vendor(mesh_op_resource_t *op_res, u1
             op_res->status_cmd = mesh_cmd_hunonic_func[i].status_cmd ? 1 : 0;
             op_res->sig = 0;
             op_res->id = mesh_cmd_hunonic_func[i].model_id_rx;
+
+            LOG_USER_MSG_INFO(0, 0,"Hunonic found model with opcode: 0x%04X", op);
             return 0;
         }
     }

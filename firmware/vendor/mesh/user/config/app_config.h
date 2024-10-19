@@ -15,4 +15,4 @@
 #define SW_VER_BUILD   241015
 
 #define DEBUG_ENABLE        1
-#define SDK_LOG_ENABLE      0
+#define SDK_LOG_ENABLE      1

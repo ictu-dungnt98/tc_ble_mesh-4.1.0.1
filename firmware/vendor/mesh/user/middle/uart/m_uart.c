@@ -92,7 +92,7 @@ uint8_t rx_get_version_msg(uart_message_t rx_data)
 
 int m_uart_rx_callback(uint8_t *data, size_t size)
 {
-    LOG_USER_MSG_INFO(data, size, "<<=== uart_rx[%d]", size);
+    // LOG_USER_MSG_INFO(data, size, "<<=== uart_rx[%d]", size);
 
     uart_message_t rx_data;
 
@@ -112,6 +112,7 @@ int m_uart_rx_callback(uint8_t *data, size_t size)
 
 int m_uart_send(uart_message_t *tx_data)
 {
+    LOG_USER_MSG_INFO((uint8_t *)&tx_data, sizeof(tx_data), "===>> uart_tx[%d]:", sizeof(tx_data));
     uart_Send((uint8_t *)tx_data, sizeof(uart_message_t));
     return 0;
 }
@@ -159,7 +160,7 @@ void m_uart_rx_loop(void)
 
     if (sq_pop(&rx_queue, &rx_data))
     {
-        LOG_USER_MSG_INFO(0, 0, "rx_data.type: %d", rx_data.type);
+        // LOG_USER_MSG_INFO(0, 0, "rx_data.type: %d", rx_data.type);
 
         if (rx_get_version_msg(rx_data))
         {
